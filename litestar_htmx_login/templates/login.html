@@ -1,0 +1,37 @@
+<!DOCTYPE html>   
+<html>   
+<head>  
+<meta name="viewport" content="width=device-width, initial-scale=1">  
+<title> Login Page </title>  
+<script src="https://unpkg.com/htmx.org@1.9.5" integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO" crossorigin="anonymous"></script>
+</head>    
+<body>    
+    <h1> Litestar HTMX Login Form </h1>
+    <form hx-post="/login" hx-target="#response-content" hx-swap="innerHTML">  
+        <div class="container">   
+            <div>
+                <label for="username">Username : </label>   
+                <input type="text" placeholder="Enter Username" name="username" required>
+            </div>
+            <div>
+                <label for="password">Password : </label>   
+                <input type="password" placeholder="Enter Password" name="password" required> 
+            </div>
+            <div>
+                <button type="submit">Login</button> 
+            </div>  
+            <div>
+                <input type="checkbox" checked="checked" name="remember"> Remember me   
+                <button type="button" class="cancelbtn"> Cancel</button>   
+                <a href="#">Forgot password? </a> 
+            </div>
+              
+        </div>   
+    </form>   
+    
+    <div id="response">
+        <div id="response-header"><h3>Response:</h3></div>
+        <div id="response-content"></div>
+    </div>
+</body>     
+</html>  

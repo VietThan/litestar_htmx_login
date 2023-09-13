@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  litestar-htmx-login:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./litestar_htmx_login:/opt/appcard/litestar_htmx_login/litestar_htmx_login
+    ports:
+      - "5999:5999"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
