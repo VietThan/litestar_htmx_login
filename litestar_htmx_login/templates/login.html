@@ -7,7 +7,7 @@
 </head>    
 <body>    
     <h1> Litestar HTMX Login Form </h1>
-    <form hx-post="/login" hx-target="#response-content" hx-swap="innerHTML">  
+    <form hx-post="/login" hx-target="#response-content" hx-swap="innerHTML" hx-encoding='multipart/form-data'>  
         <div class="container">   
             <div>
                 <label for="username">Username : </label>   
