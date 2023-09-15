@@ -9,3 +9,5 @@ $ venv/bin/poetry install
 $ docker compose build
 $ docker compose up
 ```
+
+Then navigate to http://localhost:5999/login
