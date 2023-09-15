@@ -34,41 +34,42 @@ async def ping() -> dict[str, str]:
 async def get_login() -> Template:
     return HTMXTemplate(template_name="login.html", push_url="/form")
 
-def checkbox_converter(x: str) -> bool:
-    LOGGER.info(f"got to checkbox_converter: {x}")
-    return x == 'on'
-
 @define
 class LoginPayload:
     username: str
     password: str
-    remember: bool = field(default=False, converter=checkbox_converter)
+    remember: bool = field(default=False)
 
 
 @post("/login")
-async def login(data: Annotated[LoginPayload, Body(media_type=RequestEncodingType.MULTI_PART)]) -> str:
-    LOGGER.info(data)
+async def login(data: Annotated[LoginPayload, Body(media_type=RequestEncodingType.MULTI_PART)], request: Request) -> str:
+
     return "ok"
 
 
 AUTHENTICATION_TOKEN = '1234'
+
+async def get_token_based_on_login(username: str, password: str) -> str | None:
+    if username == 'viett' and password == 'password':
+        return AUTHENTICATION_TOKEN
+    else:
+        return None
 
 @post("/api/users/token")
 async def get_token(data: dict[str, str], request: Request)-> Response:
     username = data["username"]
     password = data["password"]
 
-    if username == 'viett' and password == 'password':
-        h = request.headers
-        c = request.cookies
-        LOGGER.info(c)
+    token = await get_token_based_on_login(username, password)
+
+    if token:
         d = {
             "data": {
-                "authentication_token" : AUTHENTICATION_TOKEN,
+                "authentication_token" : token,
                 "status" : "success"
             }
         }
-        r = Response(d, status_code=HTTP_201_CREATED, cookies=[Cookie(key="auth", value=AUTHENTICATION_TOKEN,httponly=True)])
+        r = Response(d, status_code=HTTP_201_CREATED, cookies=[Cookie(key="auth", value=token,httponly=True)])
         return r
     else:
         raise HTTPException(detail="Invalid username or password", status_code=HTTP_403_FORBIDDEN)
