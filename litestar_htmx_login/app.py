@@ -55,7 +55,8 @@ class RedirectMiddleware(MiddlewareProtocol):
         self.app = app
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        if Request(scope).session is None or Request(scope).session == {}:
+        c = Request(scope).cookies
+        if "auth" not in c or c["auth"] != AUTHENTICATION_TOKEN:
             response = ASGIRedirectResponse(path="/login")
             await response(scope, receive, send)
         else:
@@ -92,7 +93,7 @@ async def login(data: Annotated[LoginPayload, Body(media_type=RequestEncodingTyp
     token = await get_token_based_on_login(data.username, data.password)
 
     if token:
-        return Response("ok", cookies=[Cookie(key="auth", value=token,httponly=True)])
+        return Response("ok", cookies=[Cookie(key="auth", value=token,httponly=True)], headers={"HX-Redirect" : "/"})
     
     return Response("Invalid Username or Password")
 
@@ -144,5 +145,7 @@ app = Litestar(
         directory=Path("litestar_htmx_login/templates"),
         engine=JinjaTemplateEngine,
     ),
-    middleware=[session_config.middleware]
+    middleware=[
+        # session_config.middleware
+    ]
 )
